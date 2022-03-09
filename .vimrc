@@ -6,4 +6,3 @@ set expandtab
 set laststatus=1
 set ruler
 set background=dark
-
