@@ -8,3 +8,8 @@ alias la='ls -A'
 alias ll='ls -Al'
 # alias ssh_jupyter='ssh -L 8888:localhost:8888'
 # export PATH="$HOME/bin:$PATH"
+
+# [wsl] if launched in ssh session, add the missing path
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    PATH="$PATH:my extra windows path"
+fi
