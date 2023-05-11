@@ -1,22 +1,14 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/yiguo/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="robbyrussell"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -84,7 +76,7 @@ plugins=(
     zsh-syntax-highlighting
     zsh-autosuggestions
 )
-    
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -113,8 +105,37 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# add $HOME/bin to PATH
-export PATH=$PATH:$HOME/bin
+# custom settings
+export PATH=$HOME/bin:$PATH
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/yiguo/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/yiguo/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/yiguo/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/yiguo/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+conda activate playground
+
+# fix wsl2 PATH when logging in through SSH
+if [[ -n "$SSH_CONNECTION" ]]; then
+    export PATH="$PATH:/usr/lib/wsl/lib"
+fi
+
+# fix Ubuntu22.04 libcuda.so could not be found problem
+export LD_LIBRARY_PATH=/usr/lib/wsl/lib:$LD_LIBRARY_PATH
+
+# make torch device order the same as nvidia-smi
+# torch device order is FASTEST_FIRST while nvidia-smi uses PCI_BUS_ID
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+
+# remove the green background for other-writable directories (windows directories)
+export LS_COLORS="$LS_COLORS:ow=1;34:tw=1;34:"
